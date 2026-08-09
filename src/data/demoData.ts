@@ -1,6 +1,30 @@
 import { MasterAnswerKey, StudentResult } from '../types';
 import { generateDemoAnswerSheetCanvas } from '../utils/imageProcessor';
 
+export const DEMO_ANSWER_KEY_12: MasterAnswerKey = {
+  id: 'key-demo-12',
+  title: 'Bảng Ô Kẻ Viết Tay Kính Chuẩn (12 câu)',
+  subject: 'Kiểm Tra Trắc Nghiệm',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  totalQuestions: 12,
+  scoringMethod: 'equal',
+  answers: {
+    1: 'A',
+    2: 'B',
+    3: 'C',
+    4: 'B',
+    5: 'A',
+    6: 'B',
+    7: 'B',
+    8: 'C',
+    9: 'B',
+    10: 'A',
+    11: 'C',
+    12: 'D',
+  },
+};
+
 export const DEMO_ANSWER_KEY_10: MasterAnswerKey = {
   id: 'key-demo-10',
   title: 'Đề Thi Thử Giữa Kỳ Môn Toán 9 (10 câu)',

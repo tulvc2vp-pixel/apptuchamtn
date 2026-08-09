@@ -13,8 +13,8 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCaptured, o
   const [rawCapturedImage, setRawCapturedImage] = useState<string | null>(null);
 
   // Preprocessing adjustment states
-  const [brightness, setBrightness] = useState(15);
-  const [contrast, setContrast] = useState(25);
+  const [brightness, setBrightness] = useState(0);
+  const [contrast, setContrast] = useState(10);
   const [rotation, setRotation] = useState(0);
   const [previewBase64, setPreviewBase64] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);

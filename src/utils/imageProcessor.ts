@@ -20,7 +20,7 @@ export async function processImageCanvas(
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      const { brightness = 15, contrast = 25, grayscale = false, rotation = 0 } = options;
+      const { brightness = 0, contrast = 0, grayscale = false, rotation = 0 } = options;
 
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
@@ -28,8 +28,8 @@ export async function processImageCanvas(
         return resolve(imageSource);
       }
 
-      // Max dimensions for speed and high AI clarity
-      const maxDim = 1280;
+      // Max dimensions for speed and high AI vision clarity
+      const maxDim = 1600;
       let width = img.width;
       let height = img.height;
 

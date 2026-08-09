@@ -7,7 +7,7 @@ import { ResultsPage } from './pages/ResultsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { PrintableAnswerSheetModal } from './components/PrintableAnswerSheetModal';
 import { MasterAnswerKey, StudentResult, AppSettings } from './types';
-import { DEMO_ANSWER_KEY_10, DEMO_ANSWER_KEY_20, createDemoStudents } from './data/demoData';
+import { DEMO_ANSWER_KEY_12, DEMO_ANSWER_KEY_10, DEMO_ANSWER_KEY_20, createDemoStudents } from './data/demoData';
 
 const SETTINGS_STORAGE_KEY = 'ctn_settings';
 const KEYS_STORAGE_KEY = 'ctn_saved_keys';
@@ -45,12 +45,12 @@ export default function App() {
     } catch (e) {
       console.error(e);
     }
-    return [DEMO_ANSWER_KEY_10, DEMO_ANSWER_KEY_20];
+    return [DEMO_ANSWER_KEY_12, DEMO_ANSWER_KEY_10, DEMO_ANSWER_KEY_20];
   });
 
   // 3. Active Answer Key State
   const [activeKey, setActiveKey] = useState<MasterAnswerKey | null>(() => {
-    return savedKeys.length > 0 ? savedKeys[0] : DEMO_ANSWER_KEY_10;
+    return savedKeys.length > 0 ? savedKeys[0] : DEMO_ANSWER_KEY_12;
   });
 
   // 4. Student Graded Results State
