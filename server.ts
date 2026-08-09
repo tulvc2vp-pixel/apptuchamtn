@@ -84,60 +84,84 @@ Trả về phản hồi đúng định dạng JSON thuần túy (không dùng ma
   ]
 }`;
 
-      const response = await ai.models.generateContent({
-        model: "gemini-3.6-flash",
-        contents: {
-          parts: [
-            {
-              inlineData: {
-                mimeType: "image/jpeg",
-                data: cleanBase64,
-              },
-            },
-            {
-              text: systemPrompt,
-            },
-          ],
-        },
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              studentName: { type: Type.STRING, description: "Họ và tên học sinh nếu nhận diện được" },
-              className: { type: Type.STRING, description: "Lớp học nếu nhận diện được" },
-              answers: {
-                type: Type.ARRAY,
-                description: `Danh sách câu trả lời nhận diện được trong bảng`,
-                items: {
-                  type: Type.OBJECT,
-                  properties: {
-                    question: { type: Type.INTEGER, description: "Số thứ tự câu hỏi" },
-                    answer: { type: Type.STRING, description: "Phương án A, B, C, D, E hoặc chuỗi rỗng nếu bỏ trống" },
-                    confidence: { type: Type.NUMBER, description: "Mức độ tin tưởng từ 0.00 đến 1.00" },
-                  },
-                  required: ["question", "answer", "confidence"],
+      let response: any;
+      try {
+        response = await ai.models.generateContent({
+          model: "gemini-2.5-flash",
+          contents: {
+            parts: [
+              {
+                inlineData: {
+                  mimeType: "image/jpeg",
+                  data: cleanBase64,
                 },
               },
-            },
-            required: ["answers"],
+              {
+                text: systemPrompt,
+              },
+            ],
           },
-        },
-      });
+          config: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: Type.OBJECT,
+              properties: {
+                studentName: { type: Type.STRING, description: "Họ và tên học sinh nếu nhận diện được" },
+                className: { type: Type.STRING, description: "Lớp học nếu nhận diện được" },
+                answers: {
+                  type: Type.ARRAY,
+                  description: `Danh sách câu trả lời nhận diện được trong bảng`,
+                  items: {
+                    type: Type.OBJECT,
+                    properties: {
+                      question: { type: Type.INTEGER, description: "Số thứ tự câu hỏi" },
+                      answer: { type: Type.STRING, description: "Phương án A, B, C, D, E hoặc chuỗi rỗng nếu bỏ trống" },
+                      confidence: { type: Type.NUMBER, description: "Mức độ tin tưởng từ 0.00 đến 1.00" },
+                    },
+                    required: ["question", "answer", "confidence"],
+                  },
+                },
+              },
+              required: ["answers"],
+            },
+          },
+        });
+      } catch (geminiErr: any) {
+        console.warn("Primary gemini-2.5-flash failed, attempting fallback to gemini-2.0-flash...", geminiErr);
+        response = await ai.models.generateContent({
+          model: "gemini-2.0-flash",
+          contents: {
+            parts: [
+              {
+                inlineData: {
+                  mimeType: "image/jpeg",
+                  data: cleanBase64,
+                },
+              },
+              {
+                text: systemPrompt,
+              },
+            ],
+          },
+          config: {
+            responseMimeType: "application/json",
+          },
+        });
+      }
 
       let responseText = response.text || "";
       
-      // Clean potential markdown wrap
+      // Clean potential markdown wrap or weird leading text
       responseText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
 
       let parsedData: any;
 
       try {
         parsedData = JSON.parse(responseText);
-      } catch (e) {
+      } catch (e: any) {
         console.error("JSON parse error from Gemini response:", responseText);
         return res.status(500).json({
-          error: "Không thể phân tích dữ liệu JSON từ AI. Vui lòng chụp lại ảnh rõ nét hơn.",
+          error: "Không thể phân tích dữ liệu từ AI. Vui lòng chụp lại ảnh rõ nét hoặc kiểm tra lại góc chụp.",
           rawResponse: responseText,
         });
       }
