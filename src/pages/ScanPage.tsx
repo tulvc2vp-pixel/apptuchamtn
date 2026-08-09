@@ -4,7 +4,7 @@ import { ScanResult } from '../components/ScanResult';
 import { MasterAnswerKey, StudentResult } from '../types';
 import { gradeAnswerSheetWithGemini } from '../services/geminiService';
 import { compareStudentWithKey } from '../utils/scoring';
-import { AlertCircle, Camera, Layers, Users, Sparkles, CheckCircle, RefreshCw } from 'lucide-react';
+import { AlertCircle, Camera, Layers, Users, Sparkles, CheckCircle, RefreshCw, Printer } from 'lucide-react';
 
 interface ScanPageProps {
   activeKey: MasterAnswerKey | null;
@@ -13,6 +13,7 @@ interface ScanPageProps {
   onGoToAnswerKey: () => void;
   onGoToSettings: () => void;
   batchResults: StudentResult[];
+  onOpenPrintModal?: () => void;
 }
 
 export const ScanPage: React.FC<ScanPageProps> = ({
@@ -22,6 +23,7 @@ export const ScanPage: React.FC<ScanPageProps> = ({
   onGoToAnswerKey,
   onGoToSettings,
   batchResults,
+  onOpenPrintModal,
 }) => {
   const [isScanning, setIsScanning] = useState(true);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -124,7 +126,7 @@ export const ScanPage: React.FC<ScanPageProps> = ({
   return (
     <div className="space-y-4">
       {/* Active Key Info & Mode Switcher */}
-      <div className="max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-sm flex items-center justify-between gap-2">
+      <div className="max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-sm flex flex-wrap items-center justify-between gap-2">
         <div className="min-w-0 flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center shrink-0">
             <Layers className="w-4 h-4" />
@@ -135,18 +137,31 @@ export const ScanPage: React.FC<ScanPageProps> = ({
           </div>
         </div>
 
-        {/* Batch Mode Toggle (Chấm nhiều bài) */}
-        <button
-          onClick={() => setIsBatchMode(!isBatchMode)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition border ${
-            isBatchMode
-              ? 'bg-indigo-600 text-white border-indigo-500 ring-2 ring-indigo-400/40'
-              : 'bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-600'
-          }`}
-        >
-          <Users className="w-3.5 h-3.5" />
-          <span>{isBatchMode ? 'Chế độ: Chấm nhiều bài' : 'Chấm nhiều bài'}</span>
-        </button>
+        <div className="flex items-center gap-2">
+          {onOpenPrintModal && (
+            <button
+              onClick={onOpenPrintModal}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 font-bold text-xs border border-slate-700 transition"
+              title="Tải mẫu phiếu in cho học sinh"
+            >
+              <Printer className="w-3.5 h-3.5 text-sky-400" />
+              <span>In phiếu bài làm</span>
+            </button>
+          )}
+
+          {/* Batch Mode Toggle (Chấm nhiều bài) */}
+          <button
+            onClick={() => setIsBatchMode(!isBatchMode)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition border ${
+              isBatchMode
+                ? 'bg-indigo-600 text-white border-indigo-500 ring-2 ring-indigo-400/40'
+                : 'bg-slate-800 text-slate-300 border-slate-700 hover:border-slate-600'
+            }`}
+          >
+            <Users className="w-3.5 h-3.5" />
+            <span>{isBatchMode ? 'Chấm nhiều bài' : 'Chấm nhiều bài'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Analyzing Overlay Loading State */}

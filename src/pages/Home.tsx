@@ -1,13 +1,14 @@
 import React from 'react';
 import { ActiveTab } from '../components/Navbar';
 import { MasterAnswerKey, StudentResult } from '../types';
-import { Camera, FilePlus, BookOpen, BarChart3, Sparkles, CheckCircle2, PlayCircle, HelpCircle } from 'lucide-react';
+import { Camera, FilePlus, BookOpen, BarChart3, Sparkles, CheckCircle2, PlayCircle, HelpCircle, Printer, FileText } from 'lucide-react';
 
 interface HomeProps {
   setActiveTab: (tab: ActiveTab) => void;
   activeAnswerKey: MasterAnswerKey | null;
   resultsCount: number;
   onRunDemo: () => void;
+  onOpenPrintModal: () => void;
 }
 
 export const Home: React.FC<HomeProps> = ({
@@ -15,6 +16,7 @@ export const Home: React.FC<HomeProps> = ({
   activeAnswerKey,
   resultsCount,
   onRunDemo,
+  onOpenPrintModal,
 }) => {
   return (
     <div className="max-w-3xl mx-auto space-y-6 pb-24">
@@ -45,11 +47,19 @@ export const Home: React.FC<HomeProps> = ({
             </button>
 
             <button
+              onClick={onOpenPrintModal}
+              className="py-3 px-4 rounded-2xl bg-sky-950/80 hover:bg-sky-900/80 text-sky-200 font-bold text-xs border border-sky-500/40 flex items-center gap-2 transition"
+            >
+              <Printer className="w-4 h-4 text-sky-400" />
+              <span>📄 TẢI MẪU PHIẾU IN (A4)</span>
+            </button>
+
+            <button
               onClick={onRunDemo}
-              className="py-3 px-4 rounded-2xl bg-slate-800/90 hover:bg-slate-700 text-sky-300 font-bold text-xs border border-slate-700 flex items-center gap-2 transition"
+              className="py-3 px-4 rounded-2xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 flex items-center gap-2 transition"
             >
               <PlayCircle className="w-4 h-4 text-emerald-400" />
-              <span>🧪 CHẠY DEMO THỬ NGHIỆM</span>
+              <span>🧪 DEMO</span>
             </button>
           </div>
         </div>
@@ -76,12 +86,22 @@ export const Home: React.FC<HomeProps> = ({
           </div>
         </div>
 
-        <button
-          onClick={() => setActiveTab('key')}
-          className="text-xs font-semibold text-sky-400 bg-sky-950/60 hover:bg-sky-900/60 border border-sky-500/30 px-3.5 py-1.5 rounded-xl transition self-start sm:self-center"
-        >
-          {activeAnswerKey ? 'Thay đổi đáp án' : '➕ Tạo đáp án mẫu'}
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-center">
+          <button
+            onClick={onOpenPrintModal}
+            className="text-xs font-bold text-sky-300 bg-sky-950/80 hover:bg-sky-900/80 border border-sky-500/40 px-3 py-1.5 rounded-xl transition flex items-center gap-1.5"
+          >
+            <Printer className="w-3.5 h-3.5 text-sky-400" />
+            <span>In phiếu bài làm</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('key')}
+            className="text-xs font-semibold text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-xl transition"
+          >
+            {activeAnswerKey ? 'Thay đổi' : '➕ Tạo mới'}
+          </button>
+        </div>
       </div>
 
       {/* Main 4 Action Grid Cards */}

@@ -50,19 +50,20 @@ async function startServer() {
       // Format clean base64 data without data:image/png;base64 prefix
       const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, "");
 
-      const systemPrompt = `Bạn là hệ thống AI nhận diện phiếu trả lời trắc nghiệm chuẩn xác dùng trong giáo dục Việt Nam.
+      const systemPrompt = `Bạn là hệ thống AI nhận diện phiếu / bảng trả lời trắc nghiệm chuẩn xác dùng trong giáo dục Việt Nam.
 
 Nhiệm vụ của bạn:
 1. Phân tích thật kỹ ảnh phiếu trả lời / bảng đáp án được cung cấp.
+   - LƯU Ý ĐẶC BIỆT VỀ MẪU BẢNG KẺ Ô CHỮ VIẾT TAY:
+     + Bảng thường có 2 hàng (hoặc nhiều bảng chia nhỏ 10-12 cột): Hàng trên là "Câu" (1, 2, 3, 4...), Hàng dưới là "Đáp án" chứa CHỮ VIẾT TAY (A, B, C, D, E) do học sinh điền vào ô vuông.
+     + Nhận diện chính xác chữ cái viết tay trong từng ô bên dưới số câu tương ứng. Học sinh có thể viết chữ hoa hoặc chữ thường (A/a, B/b, C/c, D/d, E/e). Chuyển tất cả về chữ HOA (A, B, C, D, E).
+   - ĐỐI VỚI MẪU PHIẾU TÔ TRÒN (OMR): Nhận diện ô hình tròn được tô đen hoặc khoanh tròn.
+
 2. Tìm và nhận diện Họ tên học sinh (studentName) và Lớp (className) nếu có ghi trên phiếu. Nếu không có hoặc mờ không đọc được, hãy trả về chuỗi rỗng "".
 3. Nhận diện các câu trả lời từ câu 1 đến câu ${totalQuestions}.
    - Các phương án hợp lệ: "A", "B", "C", "D", "E".
-   - Nếu học sinh tô mờ, không khoanh/tô câu đó, hoặc bỏ trống: trả về null cho answer.
-   - Nếu học sinh khoanh/tô nhiều phương án cùng lúc hoặc bị tẩy xóa không rõ ràng: trả về null cho answer hoặc chọn phương án rõ nhất nhưng giảm confidence xuống dưới 0.5.
-   - Gán mức độ tin tưởng (confidence) từ 0.00 đến 1.00 cho mỗi câu hỏi.
-     + 0.90 - 1.00: Nhận diện rất rõ ràng, chắc chắn.
-     + 0.60 - 0.89: Nhận diện khá rõ.
-     + Dưới 0.60: Nhận diện không chắc chắn, cần giáo viên kiểm tra lại.
+   - Nếu ô đáp án bị bỏ trống, tẩy xóa mờ không rõ hoặc không ghi đáp án: trả về null cho answer.
+   - Gán mức độ tin tưởng (confidence) từ 0.00 đến 1.00 cho mỗi câu hỏi dựa trên độ rõ nét của chữ viết tay hoặc vết tô.
 
 Yêu cầu định dạng JSON phản hồi chính xác tuyệt đối theo schema bên dưới:
 {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, FileCheck2, Camera, BarChart3, Settings, Sparkles } from 'lucide-react';
+import { Home, FileCheck2, Camera, BarChart3, Settings, Sparkles, Printer } from 'lucide-react';
 
 export type ActiveTab = 'home' | 'key' | 'scan' | 'results' | 'settings';
 
@@ -7,9 +7,15 @@ interface NavbarProps {
   activeTab: ActiveTab;
   setActiveTab: (tab: ActiveTab) => void;
   activeKeyTitle?: string;
+  onOpenPrintModal?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, activeKeyTitle }) => {
+export const Navbar: React.FC<NavbarProps> = ({
+  activeTab,
+  setActiveTab,
+  activeKeyTitle,
+  onOpenPrintModal,
+}) => {
   const navItems = [
     { id: 'home' as ActiveTab, label: 'Trang chủ', icon: Home },
     { id: 'key' as ActiveTab, label: 'Đáp án', icon: FileCheck2 },
@@ -22,7 +28,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, activeK
     <>
       {/* Top Mobile/Desktop Header */}
       <header className="sticky top-0 z-40 bg-slate-900 text-white shadow-md border-b border-slate-800 px-4 py-3">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
+        <div className="max-w-5xl mx-auto flex items-center justify-between gap-2">
           <div
             className="flex items-center gap-2.5 cursor-pointer select-none"
             onClick={() => setActiveTab('home')}
@@ -42,21 +48,32 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, activeK
 
           {activeKeyTitle && (
             <div
-              className="hidden md:flex items-center gap-2 bg-slate-800/80 hover:bg-slate-800 text-xs text-slate-300 px-3 py-1.5 rounded-full border border-slate-700/80 cursor-pointer transition"
+              className="hidden lg:flex items-center gap-2 bg-slate-800/80 hover:bg-slate-800 text-xs text-slate-300 px-3 py-1.5 rounded-full border border-slate-700/80 cursor-pointer transition"
               onClick={() => setActiveTab('key')}
             >
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span className="font-medium text-slate-200 truncate max-w-[200px]">
+              <span className="font-medium text-slate-200 truncate max-w-[180px]">
                 {activeKeyTitle}
               </span>
             </div>
           )}
 
-          {/* Quick scan button on header for tablet/desktop */}
-          <div className="hidden sm:flex items-center gap-2">
+          {/* Quick actions on header */}
+          <div className="flex items-center gap-2">
+            {onOpenPrintModal && (
+              <button
+                onClick={onOpenPrintModal}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 font-bold text-xs border border-slate-700 transition"
+                title="In/Tải mẫu phiếu bài làm A4"
+              >
+                <Printer className="w-4 h-4 text-sky-400" />
+                <span className="hidden sm:inline">Tải mẫu phiếu in A4</span>
+              </button>
+            )}
+
             <button
               onClick={() => setActiveTab('scan')}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-medium text-xs shadow-sm transition active:scale-95"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs shadow-sm transition active:scale-95"
             >
               <Camera className="w-4 h-4" />
               <span>Chấm ngay</span>

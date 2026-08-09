@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { MasterAnswerKey, AnswerOption } from '../types';
 import { parsePastedAnswers, formatAnswerKeyLettersOnly } from '../utils/answerParser';
-import { Save, Clipboard, Edit3, CheckCircle, Plus, BookOpen, Layers } from 'lucide-react';
+import { Save, Clipboard, Edit3, CheckCircle, Plus, BookOpen, Layers, Printer } from 'lucide-react';
 
 interface AnswerKeyFormProps {
   onSave: (key: MasterAnswerKey) => void;
   initialKey?: MasterAnswerKey | null;
   savedKeys: MasterAnswerKey[];
   onSelectKey: (key: MasterAnswerKey) => void;
+  onOpenPrintModal?: () => void;
 }
 
 export const AnswerKeyForm: React.FC<AnswerKeyFormProps> = ({
@@ -15,6 +16,7 @@ export const AnswerKeyForm: React.FC<AnswerKeyFormProps> = ({
   initialKey,
   savedKeys,
   onSelectKey,
+  onOpenPrintModal,
 }) => {
   const [title, setTitle] = useState(initialKey?.title || 'Đề Thi Thử Giữa Kỳ Môn Toán 9');
   const [subject, setSubject] = useState(initialKey?.subject || 'Môn Toán');
@@ -164,7 +166,7 @@ export const AnswerKeyForm: React.FC<AnswerKeyFormProps> = ({
 
       {/* Main Answer Key Form */}
       <form onSubmit={handleSave} className="bg-slate-800/90 border border-slate-700/80 rounded-xl p-5 shadow-sm space-y-6">
-        <div className="flex items-center justify-between border-b border-slate-700/80 pb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-700/80 pb-3 gap-2">
           <div>
             <h2 className="text-base sm:text-lg font-bold text-slate-100 flex items-center gap-2">
               <Layers className="w-5 h-5 text-sky-400" />
@@ -175,12 +177,25 @@ export const AnswerKeyForm: React.FC<AnswerKeyFormProps> = ({
             </p>
           </div>
 
-          {isSavedSuccess && (
-            <span className="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full font-medium flex items-center gap-1 border border-emerald-500/40">
-              <CheckCircle className="w-3.5 h-3.5" />
-              Đã lưu đáp án!
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            {onOpenPrintModal && (
+              <button
+                type="button"
+                onClick={onOpenPrintModal}
+                className="py-1.5 px-3 rounded-xl bg-sky-950/80 hover:bg-sky-900/80 text-sky-200 border border-sky-500/40 text-xs font-bold flex items-center gap-1.5 transition"
+              >
+                <Printer className="w-4 h-4 text-sky-400" />
+                <span>🖨️ Tải/In mẫu phiếu bài làm HS</span>
+              </button>
+            )}
+
+            {isSavedSuccess && (
+              <span className="bg-emerald-500/20 text-emerald-300 text-xs px-3 py-1 rounded-full font-medium flex items-center gap-1 border border-emerald-500/40">
+                <CheckCircle className="w-3.5 h-3.5" />
+                Đã lưu!
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Form Header Info */}

@@ -7,6 +7,7 @@ interface AnswerKeyPageProps {
   savedKeys: MasterAnswerKey[];
   onSaveKey: (key: MasterAnswerKey) => void;
   onSelectKey: (key: MasterAnswerKey) => void;
+  onOpenPrintModal?: () => void;
 }
 
 export const AnswerKeyPage: React.FC<AnswerKeyPageProps> = ({
@@ -14,6 +15,7 @@ export const AnswerKeyPage: React.FC<AnswerKeyPageProps> = ({
   savedKeys,
   onSaveKey,
   onSelectKey,
+  onOpenPrintModal,
 }) => {
   return (
     <div>
@@ -22,6 +24,7 @@ export const AnswerKeyPage: React.FC<AnswerKeyPageProps> = ({
         savedKeys={savedKeys}
         onSave={onSaveKey}
         onSelectKey={onSelectKey}
+        onOpenPrintModal={onOpenPrintModal}
       />
     </div>
   );

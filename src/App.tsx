@@ -5,6 +5,7 @@ import { AnswerKeyPage } from './pages/AnswerKeyPage';
 import { ScanPage } from './pages/ScanPage';
 import { ResultsPage } from './pages/ResultsPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { PrintableAnswerSheetModal } from './components/PrintableAnswerSheetModal';
 import { MasterAnswerKey, StudentResult, AppSettings } from './types';
 import { DEMO_ANSWER_KEY_10, DEMO_ANSWER_KEY_20, createDemoStudents } from './data/demoData';
 
@@ -14,6 +15,7 @@ const RESULTS_STORAGE_KEY = 'ctn_results';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
+  const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
 
   // 1. Settings State
   const [settings, setSettings] = useState<AppSettings>(() => {
@@ -173,6 +175,7 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         activeKeyTitle={activeKey?.title}
+        onOpenPrintModal={() => setIsPrintModalOpen(true)}
       />
 
       {/* Main Page Container */}
@@ -183,6 +186,7 @@ export default function App() {
             activeAnswerKey={activeKey}
             resultsCount={results.length}
             onRunDemo={handleRunDemo}
+            onOpenPrintModal={() => setIsPrintModalOpen(true)}
           />
         )}
 
@@ -192,6 +196,7 @@ export default function App() {
             savedKeys={savedKeys}
             onSaveKey={handleSaveKey}
             onSelectKey={handleSelectKey}
+            onOpenPrintModal={() => setIsPrintModalOpen(true)}
           />
         )}
 
@@ -203,6 +208,7 @@ export default function App() {
             onGoToAnswerKey={() => setActiveTab('key')}
             onGoToSettings={() => setActiveTab('settings')}
             batchResults={results}
+            onOpenPrintModal={() => setIsPrintModalOpen(true)}
           />
         )}
 
@@ -225,6 +231,14 @@ export default function App() {
           />
         )}
       </main>
+
+      {/* Printable Answer Sheet Generator Modal */}
+      <PrintableAnswerSheetModal
+        isOpen={isPrintModalOpen}
+        onClose={() => setIsPrintModalOpen(false)}
+        activeAnswerKey={activeKey}
+      />
     </div>
   );
 }
+
