@@ -54,13 +54,14 @@ async function startServer() {
 
 Nhiệm vụ của bạn:
 1. Phân tích thật kỹ ảnh phiếu trả lời / bảng đáp án được cung cấp.
-   - LƯU Ý ĐẶC BIỆT VỀ MẪU BẢNG KẺ Ô CHỮ VIẾT TAY:
-     + Bảng thường có 2 hàng (hoặc nhiều bảng chia nhỏ 10-12 cột): Hàng trên là "Câu" (1, 2, 3, 4...), Hàng dưới là "Đáp án" chứa CHỮ VIẾT TAY (A, B, C, D, E) do học sinh điền vào ô vuông.
-     + Nhận diện chính xác chữ cái viết tay trong từng ô bên dưới số câu tương ứng. Học sinh có thể viết chữ hoa hoặc chữ thường (A/a, B/b, C/c, D/d, E/e). Chuyển tất cả về chữ HOA (A, B, C, D, E).
+   - LƯU Ý ĐẶC BIỆT VỀ HƯỚNG ẢNH VÀ MẪU BẢNG KẺ Ô CHỮ VIẾT TAY:
+     + Bảng có thể bị xoay dọc 90 độ, nghiêng hoặc xoay ngược (do chụp bằng điện thoại). Bạn hãy nhận diện và đọc đúng nội dung dù ảnh bị xoay chiều nào.
+     + Mẫu bảng viết tay thường có 2 hàng (hoặc nhiều ô): Hàng/Cột số thứ tự "Câu" (1, 2, 3, 4..., 12) và Hàng/Cột "Đáp án" chứa CHỮ VIẾT TAY (A, B, C, D, E) do học sinh điền vào ô.
+     + Nhận diện chính xác chữ cái viết tay trong từng ô tương ứng với số câu. Học sinh có thể viết chữ hoa hoặc chữ thường (A/a, B/b, C/c, D/d, E/e). Chuyển tất cả về chữ HOA (A, B, C, D, E).
    - ĐỐI VỚI MẪU PHIẾU TÔ TRÒN (OMR): Nhận diện ô hình tròn được tô đen hoặc khoanh tròn.
 
 2. Tìm và nhận diện Họ tên học sinh (studentName) và Lớp (className) nếu có ghi trên phiếu. Nếu không có hoặc mờ không đọc được, hãy trả về chuỗi rỗng "".
-3. Nhận diện các câu trả lời từ câu 1 đến câu ${totalQuestions}.
+3. Nhận diện đầy đủ các câu trả lời từ câu 1 đến câu ${totalQuestions}.
    - Các phương án hợp lệ: "A", "B", "C", "D", "E".
    - Nếu ô đáp án bị bỏ trống, tẩy xóa mờ không rõ hoặc không ghi đáp án: trả về null cho answer.
    - Gán mức độ tin tưởng (confidence) từ 0.00 đến 1.00 cho mỗi câu hỏi dựa trên độ rõ nét của chữ viết tay hoặc vết tô.
@@ -78,7 +79,7 @@ Yêu cầu định dạng JSON phản hồi chính xác tuyệt đối theo sche
   ]
 }
 
-Không sử dụng định dạng Markdown hay văn bản phụ. Chỉ trả về đối tượng JSON hợp lệ.`;
+Chỉ trả về đối tượng JSON hợp lệ, không bọc trong markdown block.`;
 
       const response = await ai.models.generateContent({
         model: "gemini-3.6-flash",
@@ -121,11 +122,15 @@ Không sử dụng định dạng Markdown hay văn bản phụ. Chỉ trả v�
         },
       });
 
-      const responseText = response.text || "";
+      let responseText = response.text || "";
+      
+      // Clean potential markdown wrap
+      responseText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
+
       let parsedData;
 
       try {
-        parsedData = JSON.parse(responseText.trim());
+        parsedData = JSON.parse(responseText);
       } catch (e) {
         console.error("JSON parse error from Gemini response:", responseText);
         return res.status(500).json({

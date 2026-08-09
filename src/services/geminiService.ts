@@ -26,7 +26,23 @@ export async function gradeAnswerSheetWithGemini(
       }),
     });
 
-    const result = await res.json();
+    const contentType = res.headers.get('content-type') || '';
+    let result: any;
+
+    if (contentType.includes('application/json')) {
+      result = await res.json();
+    } else {
+      const rawText = await res.text();
+      console.error('Server returned non-JSON response:', rawText);
+      
+      if (res.status === 413) {
+        throw new Error('Dung lượng ảnh quá lớn. Vui lòng chụp lại hoặc giảm kích thước ảnh.');
+      } else if (res.status === 504 || res.status === 502) {
+        throw new Error('Máy chủ phản hồi chậm hoặc hết thời gian chờ (Timeout). Vui lòng thử lại.');
+      }
+
+      throw new Error('Không thể nhận diện bảng phương án. Máy chủ phản hồi không phải JSON. Vui lòng kiểm tra lại API Key hoặc chụp lại ảnh.');
+    }
 
     if (!res.ok || !result.success) {
       throw new Error(result.error || 'Lỗi khi kết nối với máy chủ AI Gemini.');
