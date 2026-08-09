@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Image as ImageIcon, RefreshCw, Check, RotateCw, Sun, Contrast, AlertCircle, Sparkles } from 'lucide-react';
+import { Camera, Image as ImageIcon, RefreshCw, Check, RotateCw, Sun, Contrast, AlertCircle, Sparkles, Smartphone, Video } from 'lucide-react';
 import { processImageCanvas } from '../utils/imageProcessor';
 
 interface CameraCaptureProps {
@@ -22,6 +22,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCaptured, o
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const nativeCameraInputRef = useRef<HTMLInputElement>(null);
 
   // Start Camera Stream
   const startCamera = async () => {
@@ -48,7 +49,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCaptured, o
       }
     } catch (err: any) {
       console.error('Camera Access Error:', err);
-      setCameraError('Không thể truy cập camera. Vui lòng cấp quyền sử dụng camera hoặc tải ảnh từ thư viện.');
+      setCameraError('Chưa được cấp quyền Camera trực tiếp. Vui lòng bấm nút "MỞ CAMERA ĐIỆN THOẠI" bên dưới để chụp trực tiếp.');
       setIsCameraActive(false);
     }
   };
@@ -95,7 +96,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCaptured, o
     applyAdjustments(dataUrl, brightness, contrast, rotation);
   };
 
-  // Handle File Upload from Gallery
+  // Handle File Upload from Gallery or Native Camera
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -108,6 +109,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCaptured, o
       applyAdjustments(dataUrl, brightness, contrast, rotation);
     };
     reader.readAsDataURL(file);
+    e.target.value = '';
   };
 
   // Process adjustments
@@ -146,7 +148,6 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCaptured, o
   const handleRetake = () => {
     setRawCapturedImage(null);
     setPreviewBase64(null);
-    startCamera();
   };
 
   const handleUseImage = () => {
@@ -159,7 +160,18 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCaptured, o
 
   return (
     <div className="max-w-xl mx-auto space-y-4 pb-20">
-      {/* Hidden File Input */}
+      {/* Hidden File Inputs */}
+      {/* 1. Native Mobile Camera Capture */}
+      <input
+        ref={nativeCameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={handleFileSelect}
+        className="hidden"
+      />
+
+      {/* 2. Choose from Photo Gallery */}
       <input
         ref={fileInputRef}
         type="file"
@@ -186,18 +198,37 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCaptured, o
                   <Camera className="w-8 h-8" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-100 text-base">Sẵn sàng chụp bảng phương án</h3>
+                  <h3 className="font-bold text-slate-100 text-base">Chụp Bảng Phương Án Học Sinh</h3>
                   <p className="text-xs text-slate-400 max-w-xs mx-auto mt-1">
-                    Đưa bảng trả lời của học sinh vào khung ngắm để đảm bảo nhận diện chính xác
+                    Chụp trực tiếp bằng Camera điện thoại hoặc sử dụng Web Stream
                   </p>
                 </div>
 
                 {cameraError && (
-                  <div className="bg-rose-950/80 border border-rose-800 text-rose-300 text-xs p-3 rounded-xl flex items-center gap-2 max-w-xs mx-auto">
-                    <AlertCircle className="w-4 h-4 shrink-0" />
-                    <span>{cameraError}</span>
+                  <div className="bg-amber-950/80 border border-amber-600/60 text-amber-200 text-xs p-3 rounded-xl flex items-center gap-2 max-w-sm mx-auto text-left">
+                    <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
+                    <span className="leading-relaxed">{cameraError}</span>
                   </div>
                 )}
+
+                {/* Main Action Buttons */}
+                <div className="pt-2 space-y-2 max-w-sm mx-auto">
+                  <button
+                    onClick={() => nativeCameraInputRef.current?.click()}
+                    className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-black text-xs shadow-xl flex items-center justify-center gap-2.5 transition active:scale-95"
+                  >
+                    <Smartphone className="w-5 h-5 text-sky-200" />
+                    <span>📷 MỞ CAMERA ĐIỆN THOẠI (CHỤP TRỰC TIẾP)</span>
+                  </button>
+
+                  <button
+                    onClick={startCamera}
+                    className="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-sky-300 font-bold text-xs border border-slate-700 flex items-center justify-center gap-2 transition"
+                  >
+                    <Video className="w-4 h-4 text-indigo-400" />
+                    <span>🎥 Mở Live Stream Webcam</span>
+                  </button>
+                </div>
               </div>
             )}
 
@@ -229,27 +260,30 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onImageCaptured, o
 
           {/* Action Bar */}
           <div className="p-4 bg-slate-900 border-t border-slate-800 flex items-center justify-around gap-2">
+            {/* Direct Mobile Camera Button */}
+            <button
+              onClick={() => nativeCameraInputRef.current?.click()}
+              className="flex flex-col items-center gap-1 text-slate-300 hover:text-white p-2 transition"
+            >
+              <div className="w-10 h-10 rounded-full bg-sky-950 border border-sky-500/50 flex items-center justify-center">
+                <Smartphone className="w-5 h-5 text-sky-400" />
+              </div>
+              <span className="text-[10px] font-semibold text-sky-300">Camera máy</span>
+            </button>
+
             {/* Gallery Upload button */}
             <button
               onClick={() => fileInputRef.current?.click()}
               className="flex flex-col items-center gap-1 text-slate-300 hover:text-white p-2 transition"
             >
               <div className="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center">
-                <ImageIcon className="w-5 h-5 text-sky-400" />
+                <ImageIcon className="w-5 h-5 text-slate-300" />
               </div>
-              <span className="text-[11px]">Thư viện</span>
+              <span className="text-[10px]">Thư viện</span>
             </button>
 
             {/* Big Shutter / Start Camera button */}
-            {!isCameraActive ? (
-              <button
-                onClick={startCamera}
-                className="flex-1 max-w-[200px] py-3 px-4 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold rounded-xl text-sm shadow-lg flex items-center justify-center gap-2 transition active:scale-95"
-              >
-                <Camera className="w-5 h-5" />
-                <span>CHỤP BẢNG PHƯƠNG ÁN</span>
-              </button>
-            ) : (
+            {isCameraActive && (
               <button
                 onClick={takeSnapshot}
                 className="w-16 h-16 rounded-full bg-white ring-4 ring-sky-500/50 flex items-center justify-center shadow-2xl transition active:scale-90"
