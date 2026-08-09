@@ -1,0 +1,6 @@
+{
+  "name": "Chấm Trắc Nghiệm AI",
+  "description": "Ứng dụng chấm phương án trắc nghiệm bằng Camera, tự động nhận diện đáp án bằng Gemini AI Vision, đối chiếu và xuất Excel.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,172 @@
+import { MasterAnswerKey, StudentResult } from '../types';
+import { generateDemoAnswerSheetCanvas } from '../utils/imageProcessor';
+
+export const DEMO_ANSWER_KEY_10: MasterAnswerKey = {
+  id: 'key-demo-10',
+  title: 'Đề Thi Thử Giữa Kỳ Môn Toán 9 (10 câu)',
+  subject: 'Toán 9',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  totalQuestions: 10,
+  scoringMethod: 'equal',
+  answers: {
+    1: 'A',
+    2: 'C',
+    3: 'B',
+    4: 'D',
+    5: 'A',
+    6: 'B',
+    7: 'C',
+    8: 'C',
+    9: 'D',
+    10: 'A',
+  },
+};
+
+export const DEMO_ANSWER_KEY_20: MasterAnswerKey = {
+  id: 'key-demo-20',
+  title: 'Đề Thi Học Kỳ 1 Tiếng Anh 9 (20 câu)',
+  subject: 'Tiếng Anh',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  totalQuestions: 20,
+  scoringMethod: 'equal',
+  answers: {
+    1: 'A', 2: 'B', 3: 'C', 4: 'D', 5: 'A',
+    6: 'C', 7: 'B', 8: 'A', 9: 'D', 10: 'B',
+    11: 'C', 12: 'D', 13: 'A', 14: 'B', 15: 'C',
+    16: 'A', 17: 'D', 18: 'B', 19: 'C', 20: 'A'
+  },
+};
+
+export function createDemoStudents(): StudentResult[] {
+  const imageA = generateDemoAnswerSheetCanvas("Nguyễn Văn A", "9A1", 10, { 1: "A", 2: "C", 3: "B", 4: "A", 5: "A", 6: "B", 7: "D", 8: "C", 9: "D", 10: "A" });
+  const imageB = generateDemoAnswerSheetCanvas("Trần Văn B", "9A1", 10, { 1: "A", 2: "C", 3: "B", 4: "D", 5: "A", 6: "B", 7: "C", 8: "C", 9: "D", 10: "A" });
+  const imageC = generateDemoAnswerSheetCanvas("Lê Thị C", "9A2", 10, { 1: "A", 2: "B", 3: "B", 4: "D", 5: "A", 6: "B", 7: "C", 8: "A", 9: "D", 10: "A" });
+
+  return [
+    {
+      id: 'res-demo-1',
+      studentName: 'Nguyễn Văn A',
+      className: '9A1',
+      answerKeyId: DEMO_ANSWER_KEY_10.id,
+      answerKeyTitle: DEMO_ANSWER_KEY_10.title,
+      totalQuestions: 10,
+      correctCount: 8,
+      incorrectCount: 2,
+      uncertainCount: 1,
+      totalScore: 8.0,
+      maxScore: 10.0,
+      percentage: 80,
+      timestamp: new Date(Date.now() - 3600000 * 2).toISOString(),
+      imageUri: imageA,
+      hasBeenVerified: true,
+      answers: [
+        { question: 1, answer: 'A', confidence: 0.98 },
+        { question: 2, answer: 'C', confidence: 0.95 },
+        { question: 3, answer: 'B', confidence: 0.92 },
+        { question: 4, answer: 'A', confidence: 0.48, isUncertain: true }, // incorrect, low confidence
+        { question: 5, answer: 'A', confidence: 0.99 },
+        { question: 6, answer: 'B', confidence: 0.96 },
+        { question: 7, answer: 'D', confidence: 0.91 }, // incorrect
+        { question: 8, answer: 'C', confidence: 0.97 },
+        { question: 9, answer: 'D', confidence: 0.94 },
+        { question: 10, answer: 'A', confidence: 0.99 },
+      ],
+      comparisonDetails: [
+        { question: 1, masterAnswer: 'A', studentAnswer: 'A', isCorrect: true, confidence: 0.98, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 2, masterAnswer: 'C', studentAnswer: 'C', isCorrect: true, confidence: 0.95, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 3, masterAnswer: 'B', studentAnswer: 'B', isCorrect: true, confidence: 0.92, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 4, masterAnswer: 'D', studentAnswer: 'A', isCorrect: false, confidence: 0.48, isUncertain: true, pointsAwarded: 0.0, maxPoints: 1.0 },
+        { question: 5, masterAnswer: 'A', studentAnswer: 'A', isCorrect: true, confidence: 0.99, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 6, masterAnswer: 'B', studentAnswer: 'B', isCorrect: true, confidence: 0.96, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 7, masterAnswer: 'C', studentAnswer: 'D', isCorrect: false, confidence: 0.91, isUncertain: false, pointsAwarded: 0.0, maxPoints: 1.0 },
+        { question: 8, masterAnswer: 'C', studentAnswer: 'C', isCorrect: true, confidence: 0.97, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 9, masterAnswer: 'D', studentAnswer: 'D', isCorrect: true, confidence: 0.94, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 10, masterAnswer: 'A', studentAnswer: 'A', isCorrect: true, confidence: 0.99, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+      ],
+    },
+    {
+      id: 'res-demo-2',
+      studentName: 'Trần Văn B',
+      className: '9A1',
+      answerKeyId: DEMO_ANSWER_KEY_10.id,
+      answerKeyTitle: DEMO_ANSWER_KEY_10.title,
+      totalQuestions: 10,
+      correctCount: 10,
+      incorrectCount: 0,
+      uncertainCount: 0,
+      totalScore: 10.0,
+      maxScore: 10.0,
+      percentage: 100,
+      timestamp: new Date(Date.now() - 3600000 * 1).toISOString(),
+      imageUri: imageB,
+      hasBeenVerified: true,
+      answers: [
+        { question: 1, answer: 'A', confidence: 0.99 },
+        { question: 2, answer: 'C', confidence: 0.98 },
+        { question: 3, answer: 'B', confidence: 0.97 },
+        { question: 4, answer: 'D', confidence: 0.96 },
+        { question: 5, answer: 'A', confidence: 0.99 },
+        { question: 6, answer: 'B', confidence: 0.98 },
+        { question: 7, answer: 'C', confidence: 0.95 },
+        { question: 8, answer: 'C', confidence: 0.99 },
+        { question: 9, answer: 'D', confidence: 0.97 },
+        { question: 10, answer: 'A', confidence: 0.99 },
+      ],
+      comparisonDetails: [
+        { question: 1, masterAnswer: 'A', studentAnswer: 'A', isCorrect: true, confidence: 0.99, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 2, masterAnswer: 'C', studentAnswer: 'C', isCorrect: true, confidence: 0.98, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 3, masterAnswer: 'B', studentAnswer: 'B', isCorrect: true, confidence: 0.97, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 4, masterAnswer: 'D', studentAnswer: 'D', isCorrect: true, confidence: 0.96, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 5, masterAnswer: 'A', studentAnswer: 'A', isCorrect: true, confidence: 0.99, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 6, masterAnswer: 'B', studentAnswer: 'B', isCorrect: true, confidence: 0.98, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 7, masterAnswer: 'C', studentAnswer: 'C', isCorrect: true, confidence: 0.95, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 8, masterAnswer: 'C', studentAnswer: 'C', isCorrect: true, confidence: 0.99, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 9, masterAnswer: 'D', studentAnswer: 'D', isCorrect: true, confidence: 0.97, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 10, masterAnswer: 'A', studentAnswer: 'A', isCorrect: true, confidence: 0.99, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+      ],
+    },
+    {
+      id: 'res-demo-3',
+      studentName: 'Lê Thị C',
+      className: '9A2',
+      answerKeyId: DEMO_ANSWER_KEY_10.id,
+      answerKeyTitle: DEMO_ANSWER_KEY_10.title,
+      totalQuestions: 10,
+      correctCount: 7,
+      incorrectCount: 3,
+      uncertainCount: 0,
+      totalScore: 7.0,
+      maxScore: 10.0,
+      percentage: 70,
+      timestamp: new Date().toISOString(),
+      imageUri: imageC,
+      hasBeenVerified: true,
+      answers: [
+        { question: 1, answer: 'A', confidence: 0.97 },
+        { question: 2, answer: 'B', confidence: 0.92 }, // incorrect (key C)
+        { question: 3, answer: 'B', confidence: 0.95 },
+        { question: 4, answer: 'D', confidence: 0.96 },
+        { question: 5, answer: 'A', confidence: 0.98 },
+        { question: 6, answer: 'B', confidence: 0.94 },
+        { question: 7, answer: 'C', confidence: 0.93 },
+        { question: 8, answer: 'A', confidence: 0.89 }, // incorrect (key C)
+        { question: 9, answer: 'D', confidence: 0.95 },
+        { question: 10, answer: 'A', confidence: 0.98 },
+      ],
+      comparisonDetails: [
+        { question: 1, masterAnswer: 'A', studentAnswer: 'A', isCorrect: true, confidence: 0.97, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 2, masterAnswer: 'C', studentAnswer: 'B', isCorrect: false, confidence: 0.92, isUncertain: false, pointsAwarded: 0.0, maxPoints: 1.0 },
+        { question: 3, masterAnswer: 'B', studentAnswer: 'B', isCorrect: true, confidence: 0.95, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 4, masterAnswer: 'D', studentAnswer: 'D', isCorrect: true, confidence: 0.96, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 5, masterAnswer: 'A', studentAnswer: 'A', isCorrect: true, confidence: 0.98, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 6, masterAnswer: 'B', studentAnswer: 'B', isCorrect: true, confidence: 0.94, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 7, masterAnswer: 'C', studentAnswer: 'C', isCorrect: true, confidence: 0.93, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 8, masterAnswer: 'C', studentAnswer: 'A', isCorrect: false, confidence: 0.89, isUncertain: false, pointsAwarded: 0.0, maxPoints: 1.0 },
+        { question: 9, masterAnswer: 'D', studentAnswer: 'D', isCorrect: true, confidence: 0.95, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+        { question: 10, masterAnswer: 'A', studentAnswer: 'A', isCorrect: true, confidence: 0.98, isUncertain: false, pointsAwarded: 1.0, maxPoints: 1.0 },
+      ],
+    },
+  ];
+}
